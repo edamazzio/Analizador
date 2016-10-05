@@ -25,7 +25,7 @@ namespace WindowsFormsApplication1.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\curso\\Documents\\")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\Public\\Documents")]
         public string tvMainRootPath {
             get {
                 return ((string)(this["tvMainRootPath"]));

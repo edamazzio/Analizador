@@ -16,7 +16,9 @@ namespace WindowsFormsApplication1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form1());
+            frmMain main = new frmMain();
+            main.Text = "Analizador de Código";
+            Application.Run(main);
         }
     }
 }

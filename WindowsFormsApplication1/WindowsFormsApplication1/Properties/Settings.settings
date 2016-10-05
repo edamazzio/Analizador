@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="tvMainRootPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Users\curso\Documents\</Value>
+      <Value Profile="(Default)">C:\Users\Public\Documents</Value>
     </Setting>
   </Settings>
 </SettingsFile>
