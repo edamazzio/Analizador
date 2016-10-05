@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace WindowsFormsApplication1
     public partial class frmMain : Form
     {
         List<string> filesToAnalize = new List<string>();
+        List<string> fileResults = new List<string>();
+
         public frmMain()
         {
             InitializeComponent();
@@ -171,6 +174,30 @@ namespace WindowsFormsApplication1
             filesToAnalize.Clear();
             GetCheckedNodes(tvMain.Nodes);
             Console.WriteLine();
+            foreach (string file in filesToAnalize)
+            {
+                run_cmd(@"C:\Users\curso\Source\Repos\Analizador\WindowsFormsApplication1\WindowsFormsApplication1\astToXML.py", @file);
+            }
+            richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count();
+        }
+
+        private string run_cmd(string pyFile, string args)
+        {
+            ProcessStartInfo start = new ProcessStartInfo();
+            start.FileName = Properties.Settings.Default.python; ;//cmd is full path to python.exe
+            start.Arguments = @pyFile + " " + args;//args is path to .py file and any cmd line args
+            ;
+            start.UseShellExecute = false;
+            start.RedirectStandardOutput = true;
+            string result = "";
+            using (Process process = Process.Start(start))
+            {
+                using (StreamReader reader = process.StandardOutput)
+                {
+                    result = reader.ReadToEnd(); ;
+                }
+            }
+            return result;
         }
 
         /// <summary>
@@ -210,6 +237,11 @@ namespace WindowsFormsApplication1
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
         }

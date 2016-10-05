@@ -38,6 +38,7 @@
             this.btnRefreshTree = new System.Windows.Forms.Button();
             this.btnAnalizar = new System.Windows.Forms.Button();
             this.pbMain = new System.Windows.Forms.ProgressBar();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -76,27 +77,27 @@
             // configuracionToolStripMenuItem
             // 
             this.configuracionToolStripMenuItem.Name = "configuracionToolStripMenuItem";
-            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.configuracionToolStripMenuItem.Text = "Configuracion";
             this.configuracionToolStripMenuItem.Click += new System.EventHandler(this.configuracionToolStripMenuItem_Click);
             // 
             // rutaInicialToolStripMenuItem
             // 
             this.rutaInicialToolStripMenuItem.Name = "rutaInicialToolStripMenuItem";
-            this.rutaInicialToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.rutaInicialToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.rutaInicialToolStripMenuItem.Text = "Ruta inicial";
             this.rutaInicialToolStripMenuItem.Click += new System.EventHandler(this.rutaInicialToolStripMenuItem_Click);
             // 
             // analizarToolStripMenuItem
             // 
             this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
-            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.analizarToolStripMenuItem.Text = "Analizar";
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
@@ -129,11 +130,21 @@
             this.pbMain.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
             this.pbMain.TabIndex = 4;
             // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Location = new System.Drawing.Point(388, 62);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(471, 399);
+            this.richTextBox1.TabIndex = 5;
+            this.richTextBox1.Text = "";
+            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 531);
+            this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.pbMain);
             this.Controls.Add(this.btnAnalizar);
             this.Controls.Add(this.btnRefreshTree);
@@ -161,6 +172,7 @@
         private System.Windows.Forms.Button btnRefreshTree;
         private System.Windows.Forms.Button btnAnalizar;
         private System.Windows.Forms.ProgressBar pbMain;
+        private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }
 

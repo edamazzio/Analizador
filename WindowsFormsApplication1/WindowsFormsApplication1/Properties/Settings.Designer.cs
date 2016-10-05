@@ -34,5 +34,17 @@ namespace WindowsFormsApplication1.Properties {
                 this["tvMainRootPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Python35\\python.exe")]
+        public string python {
+            get {
+                return ((string)(this["python"]));
+            }
+            set {
+                this["python"] = value;
+            }
+        }
     }
 }
