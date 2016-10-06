@@ -37,7 +37,6 @@
             this.salirToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.btnRefreshTree = new System.Windows.Forms.Button();
             this.btnAnalizar = new System.Windows.Forms.Button();
-            this.pbMain = new System.Windows.Forms.ProgressBar();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -121,15 +120,6 @@
             this.btnAnalizar.UseVisualStyleBackColor = true;
             this.btnAnalizar.Click += new System.EventHandler(this.btnAnalizar_Click);
             // 
-            // pbMain
-            // 
-            this.pbMain.Location = new System.Drawing.Point(13, 502);
-            this.pbMain.MarqueeAnimationSpeed = 0;
-            this.pbMain.Name = "pbMain";
-            this.pbMain.Size = new System.Drawing.Size(337, 23);
-            this.pbMain.Style = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.pbMain.TabIndex = 4;
-            // 
             // richTextBox1
             // 
             this.richTextBox1.Location = new System.Drawing.Point(388, 62);
@@ -145,7 +135,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(888, 531);
             this.Controls.Add(this.richTextBox1);
-            this.Controls.Add(this.pbMain);
             this.Controls.Add(this.btnAnalizar);
             this.Controls.Add(this.btnRefreshTree);
             this.Controls.Add(this.tvMain);
@@ -171,7 +160,6 @@
         private System.Windows.Forms.ToolStripMenuItem salirToolStripMenuItem;
         private System.Windows.Forms.Button btnRefreshTree;
         private System.Windows.Forms.Button btnAnalizar;
-        private System.Windows.Forms.ProgressBar pbMain;
         private System.Windows.Forms.RichTextBox richTextBox1;
     }
 }

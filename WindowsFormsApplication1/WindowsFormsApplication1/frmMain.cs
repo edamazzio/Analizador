@@ -171,21 +171,34 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void btnAnalizar_Click(object sender, EventArgs e)
         {
+            while (!File.Exists(@Properties.Settings.Default.astToXML)) //Mientras no encuentre el archivo, pedirá que lo busque en el fileDialog
+            {
+                MessageBox.Show("No se ha encontrado el archivo astToXML.py. Seleccione la ubicación de astToXML.py a continuación.", "Archivo no encontrado no encontrado");
+                findAstToXML();
+            }
             filesToAnalize.Clear();
             GetCheckedNodes(tvMain.Nodes);
-            Console.WriteLine();
-            foreach (string file in filesToAnalize)
-            {
-                run_cmd(@"C:\Users\curso\Source\Repos\Analizador\WindowsFormsApplication1\WindowsFormsApplication1\astToXML.py", @file);
-            }
-            richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count();
+            foreach (string file in filesToAnalize) fileResults.Add(run_cmd(@Properties.Settings.Default.astToXML, file)); //agrega cada xml a la lista fileResults
+            richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count()+ "\n";
+            foreach (string item in fileResults) richTextBox1.AppendText(item); //Solo para debug imprime toda la lista de resultados en el richTextBox1
         }
 
+        /// <summary>
+        /// Corre un script de python (pyFile) desde la consola de python.exe y retorna el resultado en un string.
+        /// </summary>
+        /// <param name="pyFile">El script de python a correr</param>
+        /// <param name="args">Argumentos del script a correr</param>
+        /// <returns>String</returns>
         private string run_cmd(string pyFile, string args)
         {
             ProcessStartInfo start = new ProcessStartInfo();
+            while (!File.Exists(Properties.Settings.Default.python))
+            {
+                MessageBox.Show("No se ha encontrado el ejecutable python.exe. Seleccione la ubicación de python.exe a continuación.", "Archivo no encontrado");
+                findPython();
+            }
             start.FileName = Properties.Settings.Default.python; ;//cmd is full path to python.exe
-            start.Arguments = @pyFile + " " + args;//args is path to .py file and any cmd line args
+            start.Arguments = "\""+@pyFile +"\" \""+ args+"\"";//args is path to .py file and any cmd line args
             ;
             start.UseShellExecute = false;
             start.RedirectStandardOutput = true;
@@ -234,6 +247,36 @@ namespace WindowsFormsApplication1
             {
                 refreshTvMain(fbd.SelectedPath);
             }            
+        }
+
+        /// <summary>
+        /// Abre un cuadro de diálogo para encontrar el ejecutable python.exe y lo guarda
+        /// en las configuraciones de la aplicacion (Properties.Settings.Default.python)
+        /// </summary>
+        private void findPython()
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.FileName = "python*";
+            openFileDialog1.Filter = "python.exe|*.exe";
+            openFileDialog1.Multiselect = false;
+            openFileDialog1.ShowDialog();
+            Properties.Settings.Default.python = openFileDialog1.FileName;
+            Properties.Settings.Default.Save();
+        }
+
+        /// <summary>
+        /// Abre un cuadro de diálogo para encontrar el archivo astToXML.py y lo guarda
+        /// en las configuraciones de la aplicacion (Properties.Settings.Default.astToXML)
+        /// </summary>
+        private void findAstToXML()
+        {
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.FileName = "astToXML*";
+            openFileDialog1.Filter = "astToXML.py|*.py";
+            openFileDialog1.Multiselect = false;
+            openFileDialog1.ShowDialog();
+            Properties.Settings.Default.astToXML= openFileDialog1.FileName;
+            Properties.Settings.Default.Save();
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)

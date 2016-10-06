@@ -8,5 +8,8 @@
     <Setting Name="python" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Python35\python.exe</Value>
     </Setting>
+    <Setting Name="astToXML" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Users\edama\Source\Repos\Analizador\WindowsFormsApplication1\WindowsFormsApplication1\astToXML.py</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

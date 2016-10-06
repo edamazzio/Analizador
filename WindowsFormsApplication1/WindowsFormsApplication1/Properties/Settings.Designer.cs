@@ -46,5 +46,18 @@ namespace WindowsFormsApplication1.Properties {
                 this["python"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Users\\edama\\Source\\Repos\\Analizador\\WindowsFormsApplication1\\WindowsFormsAppli" +
+            "cation1\\astToXML.py")]
+        public string astToXML {
+            get {
+                return ((string)(this["astToXML"]));
+            }
+            set {
+                this["astToXML"] = value;
+            }
+        }
     }
 }
