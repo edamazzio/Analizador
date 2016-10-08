@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Xml;
 
 namespace WindowsFormsApplication1
 {
@@ -125,6 +126,7 @@ namespace WindowsFormsApplication1
             frmSettings s = new frmSettings();
             s.Show();
             this.Enabled = false;
+
         }
 
         /// <summary>
@@ -210,7 +212,20 @@ namespace WindowsFormsApplication1
                     result = reader.ReadToEnd(); ;
                 }
             }
-            return result;
+
+            StringBuilder output = new StringBuilder();
+
+            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
+            {
+                reader.ReadToFollowing("_list_element");
+                reader.ReadToDescendant("list");
+                reader.MoveToFirstAttribute();
+                string genre = reader.Value;
+                output.AppendLine("The genre value: " + genre);
+            }
+
+
+            return output.ToString();
         }
 
         /// <summary>
