@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.Linq;
 
 namespace WindowsFormsApplication1
 {
@@ -213,19 +214,152 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            StringBuilder output = new StringBuilder();
-
-            using (XmlReader reader = XmlReader.Create(new StringReader(result)))
+            string respuesta = "";
+            respuesta += buscarAnidados(result);
+            
+            return respuesta;
+        }
+        
+        private String buscarAnidados(String datos)
+        {
+            int cant = 0;
+            using (var reader = XmlReader.Create(new StringReader(datos)))
             {
-                reader.ReadToFollowing("_list_element");
-                reader.ReadToDescendant("list");
-                reader.MoveToFirstAttribute();
-                string genre = reader.Value;
-                output.AppendLine("The genre value: " + genre);
+                while (reader.Read())
+                {
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        if (reader.GetAttribute("_name") == "For")
+                        {
+                            if (buscarAnidadosAux(reader.ReadSubtree()))
+                            {
+                                cant += 1;
+                            }
+                        }
+                        if (reader.GetAttribute("_name") == "while")
+                        {
+                            if (buscarAnidadosAux(reader.ReadSubtree()))
+                            {
+                                cant += 1;
+                            }
+                        }
+                    }
+                }
             }
+            return "Cantidad de ciclos anidados: " + cant + "\n";
+        }
+        private bool buscarAnidadosAux(XmlReader subTree)
+        {
+            subTree.Read();
+            while (subTree.Read())
+            {
+                
+                if (subTree.NodeType == XmlNodeType.Element && subTree.Name == "_list_element")
+                {
+                   
+                    if (subTree.GetAttribute("_name") == "For")
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        return true;
+                    }
+                    if (subTree.GetAttribute("_name") == "While")
+                    {
+                       // System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
 
+        private int checkChildsCycles(XElement doc)
+        {
+            int cant = 0;
+            XElement elem;
+            foreach (XNode node in doc.Nodes())
+            {
+                elem = (XElement)node;
+                cant += childsCycleAux(elem, 0);
 
-            return output.ToString();
+            }
+            return cant;
+        }
+
+        private int childsCycleAux(XElement node, int cant)
+        {
+            String type = "";
+            String name = "";
+            XElement elem;
+            foreach (XNode nodeAux in node.Nodes())
+            {
+                elem = (XElement)nodeAux;
+                type = elem.Name.ToString();
+                name = elem.Attribute("_name").ToString();
+
+                //System.Diagnostics.Debug.WriteLine(type + " " + name);
+                switch (type)
+                {
+                    case "_list_element":
+                        if (name!=null && name == "_name=\"For\"")
+                        {
+                            System.Diagnostics.Debug.WriteLine(type + " " + name);
+                            if (childsCycleAux2(elem))
+                            {
+                                System.Diagnostics.Debug.WriteLine("en teoria aqui suma uno, so far = " + cant);
+                                cant += 1;
+                            }
+                        }
+                        else
+                        {
+                            cant += childsCycleAux(elem, cant);
+                        }
+                        break;
+                    default:
+                        cant += childsCycleAux(elem, cant);
+                        break;
+                }
+            }
+            if (cant > 1)
+                return 1;
+            return 0;
+        }
+
+        private bool childsCycleAux2(XElement node)
+        {
+            String type = "";
+            String name = "";
+            bool result = false;
+            XElement elem;
+
+            foreach (XNode nodeAux in node.Nodes())
+            {
+                elem = (XElement)nodeAux;
+                type = elem.Name.ToString();
+                name = elem.Attribute("_name").ToString();
+                System.Diagnostics.Debug.WriteLine("Aqui entra " + type + " " + name);
+                switch (type)
+                {
+                    case "_list_element":
+                        if (name == "_name=\"For\"")
+                        {
+                            System.Diagnostics.Debug.WriteLine("Aqui tambien " + (false|true));
+                            return childsCycleAux2(elem) || true;
+                            
+                        }
+                        else
+                        {
+                            //System.Diagnostics.Debug.WriteLine("Quiero dormir! :C");
+                            return result | childsCycleAux2(elem);
+                        }
+                    default:
+                        //System.Diagnostics.Debug.WriteLine("Fale ferga la fida " + type + " " + name);
+                        return  result | childsCycleAux2(elem);
+                }
+            }
+            //System.Diagnostics.Debug.WriteLine("Aqui sale " + result.ToString() + " "  + type + " " + name);
+            return result;
         }
 
         /// <summary>

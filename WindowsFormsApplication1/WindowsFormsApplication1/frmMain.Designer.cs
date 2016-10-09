@@ -76,27 +76,27 @@
             // configuracionToolStripMenuItem
             // 
             this.configuracionToolStripMenuItem.Name = "configuracionToolStripMenuItem";
-            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.configuracionToolStripMenuItem.Text = "Configuracion";
             this.configuracionToolStripMenuItem.Click += new System.EventHandler(this.configuracionToolStripMenuItem_Click);
             // 
             // rutaInicialToolStripMenuItem
             // 
             this.rutaInicialToolStripMenuItem.Name = "rutaInicialToolStripMenuItem";
-            this.rutaInicialToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.rutaInicialToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.rutaInicialToolStripMenuItem.Text = "Ruta inicial";
             this.rutaInicialToolStripMenuItem.Click += new System.EventHandler(this.rutaInicialToolStripMenuItem_Click);
             // 
             // analizarToolStripMenuItem
             // 
             this.analizarToolStripMenuItem.Name = "analizarToolStripMenuItem";
-            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.analizarToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.analizarToolStripMenuItem.Text = "Analizar";
             // 
             // salirToolStripMenuItem
             // 
             this.salirToolStripMenuItem.Name = "salirToolStripMenuItem";
-            this.salirToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.salirToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.salirToolStripMenuItem.Text = "Salir";
             this.salirToolStripMenuItem.Click += new System.EventHandler(this.salirToolStripMenuItem_Click);
             // 
