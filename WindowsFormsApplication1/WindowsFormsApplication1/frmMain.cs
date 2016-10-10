@@ -216,28 +216,31 @@ namespace WindowsFormsApplication1
 
             string respuesta = "";
             respuesta += buscarAnidados(result);
-            
+            respuesta += contarAnidados(result);
+
+            respuesta += cantidadDef(result);
+
             return respuesta;
         }
         
         private String buscarAnidados(String datos)
         {
             int cant = 0;
-            using (var reader = XmlReader.Create(new StringReader(datos)))
+            using (var reader = XmlReader.Create(new StringReader(datos))) 
             {
-                while (reader.Read())
+                while (reader.Read()) //lee el siguiente elemento del xml
                 {
+                    /*
+                     * si es elemento (ej. <_list_element>, <something>, etc)
+                     * y si el tipo de ese elemento es "_list_element"
+                    */
                     if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
                     {
-                        if (reader.GetAttribute("_name") == "For")
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "For" || 
+                            reader.GetAttribute("_name") == "while")
                         {
-                            if (buscarAnidadosAux(reader.ReadSubtree()))
-                            {
-                                cant += 1;
-                            }
-                        }
-                        if (reader.GetAttribute("_name") == "while")
-                        {
+                            //en caso de que si lo sea, busca en sus hijos por un ciclo anidado
                             if (buscarAnidadosAux(reader.ReadSubtree()))
                             {
                                 cant += 1;
@@ -250,22 +253,18 @@ namespace WindowsFormsApplication1
         }
         private bool buscarAnidadosAux(XmlReader subTree)
         {
-            subTree.Read();
+            subTree.Read(); //lee el siguiente nodo, esto para que no lea el mismo nodo 2 veces 
+                            //(en el metodo anterior y este)
             while (subTree.Read())
             {
                 
                 if (subTree.NodeType == XmlNodeType.Element && subTree.Name == "_list_element")
                 {
                    
-                    if (subTree.GetAttribute("_name") == "For")
+                    if (subTree.GetAttribute("_name") == "For" ||
+                        subTree.GetAttribute("_name") == "While")
                     {
                         //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
-                        //" " + subTree.GetAttribute("lineno") + "\n");
-                        return true;
-                    }
-                    if (subTree.GetAttribute("_name") == "While")
-                    {
-                       // System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
                         //" " + subTree.GetAttribute("lineno") + "\n");
                         return true;
                     }
@@ -274,92 +273,86 @@ namespace WindowsFormsApplication1
             return false;
         }
 
-        private int checkChildsCycles(XElement doc)
+        private String contarAnidados(String datos)
         {
-            int cant = 0;
-            XElement elem;
-            foreach (XNode node in doc.Nodes())
+            int mayor = 0;
+            int temp = 0;
+            using (var reader = XmlReader.Create(new StringReader(datos)))
             {
-                elem = (XElement)node;
-                cant += childsCycleAux(elem, 0);
-
-            }
-            return cant;
-        }
-
-        private int childsCycleAux(XElement node, int cant)
-        {
-            String type = "";
-            String name = "";
-            XElement elem;
-            foreach (XNode nodeAux in node.Nodes())
-            {
-                elem = (XElement)nodeAux;
-                type = elem.Name.ToString();
-                name = elem.Attribute("_name").ToString();
-
-                //System.Diagnostics.Debug.WriteLine(type + " " + name);
-                switch (type)
+                while (reader.Read()) //lee el siguiente elemento del xml
                 {
-                    case "_list_element":
-                        if (name!=null && name == "_name=\"For\"")
+                    /*
+                     * si es elemento (ej. <_list_element>, <something>, etc)
+                     * y si el tipo de ese elemento es "_list_element"
+                    */
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "For" ||
+                            reader.GetAttribute("_name") == "while")
                         {
-                            System.Diagnostics.Debug.WriteLine(type + " " + name);
-                            if (childsCycleAux2(elem))
+                            //en caso de que si lo sea, busca en sus hijos por un ciclo anidado
+                            temp = contarAnidadosAux(reader.ReadSubtree());
+                            if (temp>mayor)
                             {
-                                System.Diagnostics.Debug.WriteLine("en teoria aqui suma uno, so far = " + cant);
-                                cant += 1;
+                                mayor = temp;
                             }
                         }
-                        else
-                        {
-                            cant += childsCycleAux(elem, cant);
-                        }
-                        break;
-                    default:
-                        cant += childsCycleAux(elem, cant);
-                        break;
+                    }
                 }
             }
-            if (cant > 1)
-                return 1;
-            return 0;
+            return "Mayor Profundidad: " + mayor + "\n";
         }
-
-        private bool childsCycleAux2(XElement node)
+        private int contarAnidadosAux(XmlReader subTree)
         {
-            String type = "";
-            String name = "";
-            bool result = false;
-            XElement elem;
-
-            foreach (XNode nodeAux in node.Nodes())
+            subTree.Read(); //lee el siguiente nodo, esto para que no lea el mismo nodo 2 veces 
+                            //(en el metodo anterior y este)
+            int temp = 0;
+            int mayor = 0;
+            while (subTree.Read())
             {
-                elem = (XElement)nodeAux;
-                type = elem.Name.ToString();
-                name = elem.Attribute("_name").ToString();
-                System.Diagnostics.Debug.WriteLine("Aqui entra " + type + " " + name);
-                switch (type)
+
+                if (subTree.NodeType == XmlNodeType.Element && subTree.Name == "_list_element")
                 {
-                    case "_list_element":
-                        if (name == "_name=\"For\"")
+
+                    if (subTree.GetAttribute("_name") == "For" ||
+                        subTree.GetAttribute("_name") == "While")
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        temp = contarAnidadosAux(subTree.ReadSubtree()) + 1;
+                        if (temp > mayor)
                         {
-                            System.Diagnostics.Debug.WriteLine("Aqui tambien " + (false|true));
-                            return childsCycleAux2(elem) || true;
-                            
+                            mayor = temp;
                         }
-                        else
-                        {
-                            //System.Diagnostics.Debug.WriteLine("Quiero dormir! :C");
-                            return result | childsCycleAux2(elem);
-                        }
-                    default:
-                        //System.Diagnostics.Debug.WriteLine("Fale ferga la fida " + type + " " + name);
-                        return  result | childsCycleAux2(elem);
+                    }
                 }
             }
-            //System.Diagnostics.Debug.WriteLine("Aqui sale " + result.ToString() + " "  + type + " " + name);
-            return result;
+            return mayor;
+        }
+        
+        private string cantidadDef(String datos)
+        {
+            int cant = 0;
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    /*
+                     * si es elemento (ej. <_list_element>, <something>, etc)
+                     * y si el tipo de ese elemento es "_list_element"
+                    */
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "FunctionDef")
+                        {
+                            cant += 1;
+                        }
+                    }
+                }
+            }
+            return "Cantidad de funciones definidas: " + cant + "\n";
         }
 
         /// <summary>
