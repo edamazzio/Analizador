@@ -227,6 +227,7 @@ namespace WindowsFormsApplication1
             respuesta += cantidadDef(result);
             respuesta += buscarFuncionesRecurs(result, 3);
             respuesta += contarInstFucnionesRecurs(result);
+            respuesta += cantidadInstrucciones(result);
 
             return respuesta + "\n\n" + result;
         }
@@ -414,13 +415,11 @@ namespace WindowsFormsApplication1
             return cant;
         }
 
-        /*
-         * Cuenta la cantidad de funciones definidas dentro del programa
-         * param:
-                * string datos: Cadena los datos del xml
-         * return:
-                * string
-        */
+        /// <summary>
+        /// Cuenta la cantidad de funciones definidas dentro del programa
+        /// </summary>
+        /// <param name="datos">Cadena con los datos del xml</param>
+        /// <returns></returns>
         private string cantidadDef(String datos)
         {
             int cant = 0;
@@ -581,6 +580,48 @@ namespace WindowsFormsApplication1
                 return cant;
             }
             return 0;
+        }
+
+        /// <summary>
+        /// Cuenta la cantidad total de instrucciones dentro del programa
+        /// </summary>
+        /// <param name="datos">Cadena con los datos del xml</param>
+        /// <returns>La cantidad de instrucciones dentro del programa</returns>
+        private string cantidadInstrucciones(String datos)
+        {
+            int cant = 0;
+            string nombreTemp = "";
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.GetAttribute("_name") == "FunctionDef")
+                        {
+                            nombreTemp = reader.GetAttribute("_name");
+                        }
+
+                        if (reader.GetAttribute("_name") == "Assign" || reader.GetAttribute("_name") == "BinOp" ||
+                            reader.GetAttribute("_name") == "If" || reader.GetAttribute("_name") == "Return" ||
+                            reader.GetAttribute("_name") == "For" || reader.GetAttribute("_name") == "While" ||
+                            reader.GetAttribute("_name") == "AugAssign")
+                        {
+                            System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
+                            " " + reader.GetAttribute("lineno") + " " + cant + "\n");
+                            cant++;
+                        }
+
+                        if (reader.Name == "func" && reader.GetAttribute("id") == nombreTemp)
+                        {
+                            System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
+                            " " + reader.GetAttribute("lineno") + " " + cant + "\n");
+                            cant++;
+                        }
+                    }
+                }
+            }
+            return "Cantidad total de instrucciones: " + cant + "\n";
         }
 
         /// <summary>
