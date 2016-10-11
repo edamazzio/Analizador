@@ -252,7 +252,7 @@ namespace WindowsFormsApplication1
                     {
                         //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
                         if (reader.GetAttribute("_name") == "For" || 
-                            reader.GetAttribute("_name") == "while")
+                            reader.GetAttribute("_name") == "While")
                         {
                             //en caso de que si lo sea, busca en sus hijos por un ciclo anidado
                             if (buscarAnidadosAux(reader.ReadSubtree()))
@@ -310,7 +310,7 @@ namespace WindowsFormsApplication1
                     {
                         //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
                         if (reader.GetAttribute("_name") == "For" ||
-                            reader.GetAttribute("_name") == "while")
+                            reader.GetAttribute("_name") == "While")
                         {
                             //en caso de que si lo sea, busca en sus hijos por un ciclo anidado
                             temp = contarAnidadosAux(reader.ReadSubtree());
@@ -374,7 +374,7 @@ namespace WindowsFormsApplication1
                     {
                         //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
                         if (reader.GetAttribute("_name") == "For" ||
-                            reader.GetAttribute("_name") == "while")
+                            reader.GetAttribute("_name") == "While")
                         {
                             //en caso de que si lo sea, cuenta la cantidad de instrucciones que hay dentro
                             //de ese ciclo
