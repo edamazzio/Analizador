@@ -346,20 +346,23 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            System.Diagnostics.Debug.WriteLine(result);
+            if (result != "")
+            {
+                valoresResultados[0] += buscarAnidados(result);
+                valoresResultados[1] += contarAnidados(result);
+                valoresResultados[2] += contarInsDentroCiclos(result);
+                valoresResultados[3] += cantidadDef(result);
+                valoresResultados[4] += buscarFuncionesRecurs(result, 1);
+                valoresResultados[5] += buscarFuncionesRecurs(result, 2);
+                valoresResultados[6] += contarInstFuncionesRecurs(result);
+                valoresResultados[7] += cantidadInstrucciones(result);
+                valoresResultados[9] += cantidadNOdentroFunciones(result);
+                return;
+            }
 
-            valoresResultados[0] += buscarAnidados(result);
-            valoresResultados[1] += contarAnidados(result);
-            valoresResultados[2] += contarInsDentroCiclos(result);
-            valoresResultados[3] += cantidadDef(result);
-            valoresResultados[4] += buscarFuncionesRecurs(result, 1);
-            valoresResultados[5] += buscarFuncionesRecurs(result, 2);
-            valoresResultados[6] += contarInstFuncionesRecurs(result);
-            valoresResultados[7] += cantidadInstrucciones(result);
-            valoresResultados[9] += cantidadNOdentroFunciones(result);
+            MessageBox.Show("El script \"astToXML.py\" falló al leer el archivo \"" + args + "\". \nEsto se debe a caracteres inválidos en el código fuente. Por lo tanto, este se ha excluido del análisis", "Error del Script");
 
 
-            return;
         }
 
         /*
@@ -839,6 +842,7 @@ namespace WindowsFormsApplication1
             OpenFileDialog openFileDialog1 = new OpenFileDialog();
             openFileDialog1.FileName = "python*";
             openFileDialog1.Filter = "python.exe|*.exe";
+            openFileDialog1.FilterIndex = 1;
             openFileDialog1.Multiselect = false;
             openFileDialog1.ShowDialog();
             Properties.Settings.Default.python = openFileDialog1.FileName;
