@@ -182,6 +182,7 @@ namespace WindowsFormsApplication1
                 findAstToXML();
             }
             filesToAnalize.Clear();
+            fileResults.Clear();
             GetCheckedNodes(tvMain.Nodes);
             foreach (string file in filesToAnalize) fileResults.Add(run_cmd(@Properties.Settings.Default.astToXML, file)); //agrega cada xml a la lista fileResults
             richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count()+ "\n";
