@@ -217,12 +217,20 @@ namespace WindowsFormsApplication1
             string respuesta = "";
             respuesta += buscarAnidados(result);
             respuesta += contarAnidados(result);
-
+            respuesta += contarInsDentroCiclos(result);
             respuesta += cantidadDef(result);
+            respuesta += buscarFucnionesRecurs(result, 3);
 
-            return respuesta;
+            return respuesta + "\n\n" + result;
         }
-        
+
+        /*
+         * Cuenta (junto con su auxiliar) la cantidad de los ciclos anidados
+         * param:
+                * string datos: Cadena los datos del xml
+         * return:
+                * string
+        */
         private String buscarAnidados(String datos)
         {
             int cant = 0;
@@ -273,6 +281,13 @@ namespace WindowsFormsApplication1
             return false;
         }
 
+        /*
+         * Cuenta (junto con su auxiliar) la profundidad de los ciclos anidados
+         * param:
+                * string datos: Cadena los datos del xml
+         * return:
+                * string
+        */
         private String contarAnidados(String datos)
         {
             int mayor = 0;
@@ -330,7 +345,75 @@ namespace WindowsFormsApplication1
             }
             return mayor;
         }
-        
+
+        /*
+         * Cuenta (junto con su auxiliar) la cantidad de instrucciones, incluidos condicionales, 
+        excepto ciclos anidados, dentro de ciclos
+         * param:
+                * string datos: Cadena los datos del xml
+         * return:
+                * string
+        */
+        private String contarInsDentroCiclos(String datos)
+        {
+            int cant = 0;
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    /* si es elemento (ej. <_list_element>, <something>, etc)
+                     y si el tipo de ese elemento es "_list_element"
+                    */
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "For" ||
+                            reader.GetAttribute("_name") == "while")
+                        {
+                            //en caso de que si lo sea, cuenta la cantidad de instrucciones que hay dentro
+                            //de ese ciclo
+                            System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
+                            " " + reader.GetAttribute("lineno") + " " + reader.NodeType + "\n");
+
+                            cant += contarInsDentroCiclosAux(reader.ReadSubtree());
+                        }
+                    }
+                }
+            }
+            return "Cantidad de instrucciones dentro de ciclos: " + cant + "\n";
+        }
+        private int contarInsDentroCiclosAux(XmlReader subTree)
+        {
+            subTree.Read(); //lee el siguiente nodo, esto para que no lea el mismo nodo 2 veces 
+                            //(en el metodo anterior y este)
+            int cant = 0;
+            while (subTree.Read())
+            {
+
+                if (subTree.NodeType == XmlNodeType.Element && 
+                            (subTree.Name == "_list_element" || subTree.Name == "value"))
+                {
+
+                    if (subTree.GetAttribute("_name") == "Assign" ||
+                        subTree.GetAttribute("_name") == "BinOp" ||
+                        subTree.GetAttribute("_name") == "If")
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        cant ++;
+                    }
+                }
+            }
+            return cant;
+        }
+
+        /*
+         * Cuenta la cantidad de funciones definidas dentro del programa
+         * param:
+                * string datos: Cadena los datos del xml
+         * return:
+                * string
+        */
         private string cantidadDef(String datos)
         {
             int cant = 0;
@@ -353,6 +436,81 @@ namespace WindowsFormsApplication1
                 }
             }
             return "Cantidad de funciones definidas: " + cant + "\n";
+        }
+
+        /// <summary>
+        /// Cuenta la cantidad de funciones recursivas en el archivo de python
+        /// </summary>
+        /// <param name="datos"> Archivo xml representado en string </param>
+        /// <param name="seleccion"> Selecciona que tipo de funciones recursivas desea mostrar.\n1=Recursion Simple, 2=Recursion Multiple, otro=Ambas</param>
+        /// <returns></returns>
+        String buscarFucnionesRecurs(String datos, int seleccion)
+        {
+            int cantTemp = 0;
+            int simples = 0;
+            int compuestas = 0;
+
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    /* si es elemento (ej. <_list_element>, <something>, etc)
+                     y si el tipo de ese elemento es "_list_element"
+                    */
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "FunctionDef")
+                        {
+                            //en caso de que si lo sea, revisa dentro de la funcion si hay una llamada
+                            //a ella misma.
+                            cantTemp = buscarFucnionesRecursAux(reader.ReadSubtree(), reader.GetAttribute("name"));
+                            if (cantTemp > 1)
+                            {
+                                compuestas++;
+                            }
+                            if (cantTemp == 1)
+                            {
+                                simples++;
+                            }
+                        }
+                    }
+                }
+            }
+
+            switch (seleccion)
+            {
+                case 1:
+                    return "Cantidad de funciones recursivas simples: " + simples + "\n";
+                case 2:
+                    return "Cantidad de funciones recursivas compuestas: " + compuestas + "\n";
+               default:
+                    return "Cantidad de funciones recursivas simples: " + simples + 
+                        "\nCantidad de funciones recursivas compuestas: " + compuestas + "\n";
+            }
+        }
+
+        int buscarFucnionesRecursAux(XmlReader subTree, string nombre)
+        {
+            int cant = 0;
+
+            while (subTree.Read())
+            {
+
+                if (subTree.NodeType == XmlNodeType.Element &&
+                            (subTree.Name == "func"))
+                {
+
+                    if (subTree.GetAttribute("id") == nombre)
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        cant++;
+                    }
+                }
+            }
+
+            return cant;
         }
 
         /// <summary>
