@@ -143,15 +143,22 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void configuracionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var s = new frmSettings(opcionesConfiguracion);
-            s.Location = this.Location;
-            s.StartPosition = FormStartPosition.Manual;
-            s.FormClosing += delegate {  this.Enabled = true; };
-            s.Show();
-            this.Enabled = false;
-            
+            using (var s = new frmSettings(opcionesConfiguracion))
+            {
 
+                s.Location = this.Location;
+                s.StartPosition = FormStartPosition.Manual;
+                s.FormClosing += delegate { this.Enabled = true; };
+                //s.Show();
+                this.Enabled = false;
+                var result = s.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    var val = s.opcionesConfiguracion;
+                    opcionesConfiguracion = val;
+                }
 
+            }
         }
 
         /// <summary>
@@ -198,6 +205,14 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void btnAnalizar_Click(object sender, EventArgs e)
         {
+            analizar();
+        }
+
+        /// <summary>
+        /// metodo que ejecuta el proceso para analizar los archivos y adjuntar el resultado al richTextBox1
+        /// </summary>
+        private void analizar()
+        {
             while (!File.Exists(@Properties.Settings.Default.astToXML)) //Mientras no encuentre el archivo, pedirá que lo busque en el fileDialog
             {
                 MessageBox.Show("No se ha encontrado el archivo astToXML.py. Seleccione la ubicación de astToXML.py a continuación.", "Archivo no encontrado no encontrado");
@@ -212,7 +227,7 @@ namespace WindowsFormsApplication1
                 run_cmd(@Properties.Settings.Default.astToXML, file); //agrega cada xml a la lista fileResults
             }
 
-            richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count()+ "\n";
+            richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count() + "\n";
             if (filesToAnalize.Count() > 0)
             {
                 richTextBox1.AppendText(generateResultString()); //Solo para debug imprime toda la lista de resultados en el richTextBox1
@@ -272,7 +287,6 @@ namespace WindowsFormsApplication1
             }
             if (opcionesConfiguracion[6])
             {
-                a += "\napartir de aqui faltan implementar\n";
                 a += "Cantidad de instrucciones dentro de funcoines recursivas:";
                 a += valoresResultados[6] + "\n";
             }
@@ -847,6 +861,12 @@ namespace WindowsFormsApplication1
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        //boton de analizar desde el menu de configuracion
+        private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            analizar();
         }
     }
 }

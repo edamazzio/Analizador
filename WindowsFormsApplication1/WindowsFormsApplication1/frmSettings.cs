@@ -12,10 +12,7 @@ namespace WindowsFormsApplication1
 {
     public partial class frmSettings : Form
     {
-        List<bool> opcionesConfiguracion = new List<bool>()
-        {
-            {true},{true},{true},{true},{true},{true},{true},{true},{true},{true}
-        };
+        public List<bool> opcionesConfiguracion { get; set; }
 
         public frmSettings(List<bool> list)
         {
@@ -23,19 +20,40 @@ namespace WindowsFormsApplication1
             opcionesConfiguracion = list;
             setCheckedListBox1();
         }
-
+        /// <summary>
+        /// settea el estado de los checkboxes al abrir la ventana
+        /// segun el atributo opcionesConfiguracion
+        /// </summary>
         private void setCheckedListBox1(){
             for (int i = 0; i < this.chkBxSettings.Items.Count; i++)
             {
                 if (opcionesConfiguracion[i] == false)
                 {
-                    this.chkBxSettings.SetItemCheckState(i, CheckState.Unchecked);
+                    //this.chkBxSettings.SetItemCheckState(i, CheckState.Unchecked);
                     this.chkBxSettings.SetItemChecked(i, false);
                 }
                 else
                 {
-                    this.chkBxSettings.SetItemCheckState(i, CheckState.Checked);
+                    //this.chkBxSettings.SetItemCheckState(i, CheckState.Checked);
                     this.chkBxSettings.SetItemChecked(i, true);
+                }
+            }
+        }
+        /// <summary>
+        /// recoje el estado de los checkboxes al cerrarse la venta
+        /// guarda los estados en el atributo opcionesConfiguracion
+        /// </summary>
+        private void getCheckedListBox1()
+        {
+            for (int i = 0; i < this.chkBxSettings.Items.Count; i++)
+            {
+                if (this.chkBxSettings.GetItemChecked(i) == false)
+                {
+                    opcionesConfiguracion[i] = false;
+                }
+                else
+                {
+                    opcionesConfiguracion[i] = true;
                 }
             }
         }
@@ -51,10 +69,16 @@ namespace WindowsFormsApplication1
         {
 
         }
-
+        /// <summary>
+        /// botton de guardar: devuelve la lista de estados de los checkboxes al form padre
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void button1_Click(object sender, EventArgs e)
         {
-
+            getCheckedListBox1();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
         }
     }
 }
