@@ -325,12 +325,17 @@ namespace WindowsFormsApplication1
                 }
             }
 
+            System.Diagnostics.Debug.WriteLine(result);
+
             valoresResultados[0] += buscarAnidados(result);
             valoresResultados[1] += contarAnidados(result);
             valoresResultados[2] += contarInsDentroCiclos(result);
             valoresResultados[3] += cantidadDef(result);
-            valoresResultados[4] += buscarFucnionesRecurs(result, 1);
-            valoresResultados[4] += buscarFucnionesRecurs(result, 2);
+            valoresResultados[4] += buscarFuncionesRecurs(result, 1);
+            valoresResultados[5] += buscarFuncionesRecurs(result, 2);
+            valoresResultados[6] += contarInstFuncionesRecurs(result);
+            valoresResultados[7] += cantidadInstrucciones(result);
+            valoresResultados[9] += cantidadNOdentroFunciones(result);
 
 
             return;
@@ -559,7 +564,7 @@ namespace WindowsFormsApplication1
         /// <param name="datos"> Archivo xml representado en string </param>
         /// <param name="seleccion"> Selecciona que tipo de funciones recursivas desea mostrar.\n1=Recursion Simple, 2=Recursion Multiple, otro=Ambas</param>
         /// <returns></returns>
-        int buscarFucnionesRecurs(String datos, int seleccion)
+        int buscarFuncionesRecurs(String datos, int seleccion)
         {
             int cantTemp = 0;
             int simples = 0;
@@ -627,7 +632,7 @@ namespace WindowsFormsApplication1
             return cant;
         }
 
-        String contarInstFucnionesRecurs(String datos)
+        int contarInstFuncionesRecurs(String datos)
         {
             int cant = 0;
 
@@ -651,7 +656,7 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            return "Cantidad de instrucciones dentro de funciones recursivas: " + cant + "\n";
+            return cant;
         }
 
         int contarInstFuncionesRecursAux(XmlReader subTree, string nombre)
@@ -695,7 +700,7 @@ namespace WindowsFormsApplication1
         /// </summary>
         /// <param name="datos">Cadena con los datos del xml</param>
         /// <returns>La cantidad de instrucciones dentro del programa</returns>
-        private string cantidadInstrucciones(String datos)
+        private int cantidadInstrucciones(String datos)
         {
             int cant = 0;
             string nombreTemp = "";
@@ -713,11 +718,11 @@ namespace WindowsFormsApplication1
                         if (reader.GetAttribute("_name") == "Assign" || reader.GetAttribute("_name") == "BinOp" ||
                             reader.GetAttribute("_name") == "If" || reader.GetAttribute("_name") == "Return" ||
                             reader.GetAttribute("_name") == "For" || reader.GetAttribute("_name") == "While" ||
-                            reader.GetAttribute("_name") == "AugAssign")
+                            reader.GetAttribute("_name") == "AugAssign" || reader.GetAttribute("id") == "print")
                         {
-                            System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
-                            " " + reader.GetAttribute("lineno") + " " + cant + "\n");
-                            cant++;
+                            //System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
+                            //" " + reader.GetAttribute("lineno") + " " + cant + "\n");
+                            cant ++;
                         }
 
                         if (reader.Name == "func" && reader.GetAttribute("id") == nombreTemp)
@@ -729,8 +734,44 @@ namespace WindowsFormsApplication1
                     }
                 }
             }
-            return "Cantidad total de instrucciones: " + cant + "\n";
+            return cant;
         }
+
+        int cantidadNOdentroFunciones(string datos)
+        {
+            int cant = 0;
+
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    if (reader.NodeType == XmlNodeType.Element)
+                    {
+                        if (reader.GetAttribute("_name") == "FunctionDef")
+                        {
+                            cantidadNOdentroFuncionesAux(reader.ReadSubtree());
+                        }
+                        if (reader.GetAttribute("_name") == "Assign" || reader.GetAttribute("_name") == "BinOp" ||
+                            reader.GetAttribute("_name") == "If" || reader.GetAttribute("_name") == "Return" ||
+                            reader.GetAttribute("_name") == "For" || reader.GetAttribute("_name") == "While" ||
+                            reader.GetAttribute("_name") == "AugAssign" || reader.GetAttribute("id") == "print")
+                        {
+                            //System.Diagnostics.Debug.WriteLine(reader.Name + " " + reader.GetAttribute("_name") +
+                            //" " + reader.GetAttribute("lineno") + " " + cant + "\n");
+                            cant++;
+                        }
+                    }
+                }
+            }
+            return cant;
+        }
+
+        void cantidadNOdentroFuncionesAux(XmlReader subTree)
+        {
+            while (subTree.Read())
+            {            }
+        }
+        
 
         /// <summary>
         /// Llena la lista filesToAnalize con los elementos del árbol seleccionado que tengan extensión .py
