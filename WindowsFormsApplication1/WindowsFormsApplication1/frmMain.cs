@@ -143,6 +143,14 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void configuracionToolStripMenuItem_Click(object sender, EventArgs e)
         {
+        }
+
+        /// <summary>
+        /// abre la configuracion de los checkboxes
+        /// </summary>
+        private void abrirConfiguracion()
+        {
+
             using (var s = new frmSettings(opcionesConfiguracion))
             {
 
@@ -160,7 +168,6 @@ namespace WindowsFormsApplication1
 
             }
         }
-
         /// <summary>
         /// Evento del elemento Salir del menú Archivo de la barra de menús principal.
         /// </summary>
@@ -867,6 +874,11 @@ namespace WindowsFormsApplication1
         private void analizarToolStripMenuItem_Click(object sender, EventArgs e)
         {
             analizar();
+        }
+
+        private void configuracionToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            abrirConfiguracion();
         }
     }
 }

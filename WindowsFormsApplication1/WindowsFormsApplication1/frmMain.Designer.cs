@@ -38,6 +38,7 @@
             this.btnRefreshTree = new System.Windows.Forms.Button();
             this.btnAnalizar = new System.Windows.Forms.Button();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.configuracionToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,9 +76,11 @@
             // 
             // configuracionToolStripMenuItem
             // 
+            this.configuracionToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.configuracionToolStripMenuItem1});
             this.configuracionToolStripMenuItem.Name = "configuracionToolStripMenuItem";
             this.configuracionToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.configuracionToolStripMenuItem.Text = "Configuracion";
+            this.configuracionToolStripMenuItem.Text = "Archivo";
             this.configuracionToolStripMenuItem.Click += new System.EventHandler(this.configuracionToolStripMenuItem_Click);
             // 
             // rutaInicialToolStripMenuItem
@@ -130,6 +133,13 @@
             this.richTextBox1.Text = "";
             this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
+            // configuracionToolStripMenuItem1
+            // 
+            this.configuracionToolStripMenuItem1.Name = "configuracionToolStripMenuItem1";
+            this.configuracionToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.configuracionToolStripMenuItem1.Text = "Configuracion";
+            this.configuracionToolStripMenuItem1.Click += new System.EventHandler(this.configuracionToolStripMenuItem1_Click);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -162,6 +172,7 @@
         private System.Windows.Forms.Button btnRefreshTree;
         private System.Windows.Forms.Button btnAnalizar;
         private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.ToolStripMenuItem configuracionToolStripMenuItem1;
     }
 }
 
