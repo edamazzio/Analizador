@@ -139,7 +139,7 @@ namespace WindowsFormsApplication1
         }
 
         /// <summary>
-        /// Evento del elemento salir del menú Archivo de la barra de menús principal.
+        /// Evento que abre el form de configuracion con los checkboxes
         /// </summary>
         private void configuracionToolStripMenuItem_Click(object sender, EventArgs e)
         {
