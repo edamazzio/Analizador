@@ -143,7 +143,7 @@ namespace WindowsFormsApplication1
         /// </summary>
         private void configuracionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            var s = new frmSettings();
+            var s = new frmSettings(opcionesConfiguracion);
             s.Location = this.Location;
             s.StartPosition = FormStartPosition.Manual;
             s.FormClosing += delegate {  this.Enabled = true; };
