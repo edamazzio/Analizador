@@ -19,15 +19,7 @@ namespace WindowsFormsApplication1
         List<string> filesToAnalize = new List<string>();
         List<int> valoresResultados = new List<int>() 
         {
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0},
-            {0}
+            {0},{0},{0},{0},{0},{0},{0},{0},{0},{0}
         };
         //los resultados, van a ir en el siguiente orden:
         // 0: cantidad de ciclos anidados
@@ -40,6 +32,11 @@ namespace WindowsFormsApplication1
         // 7: cantidad de instrucciones totales del programa
         // 8: cantidad de instrucciones en comentario
         // 9: cantidad de instrucciones NO dentro de funciones
+        List<bool> opcionesConfiguracion = new List<bool>()
+        {
+            {true},{true},{true},{true},{true},{true},{true},{true},{true},{true}
+        };
+        // mismo orde a valores resultados
 
         public frmMain()
         {
@@ -216,7 +213,10 @@ namespace WindowsFormsApplication1
             }
 
             richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count()+ "\n";
-            richTextBox1.AppendText(generateResultString()); //Solo para debug imprime toda la lista de resultados en el richTextBox1
+            if (filesToAnalize.Count() > 0)
+            {
+                richTextBox1.AppendText(generateResultString()); //Solo para debug imprime toda la lista de resultados en el richTextBox1
+            }
         }
 
         /// <summary>
@@ -239,26 +239,61 @@ namespace WindowsFormsApplication1
         private string generateResultString()
         {
             string a = "";
-            a += "Cantidad de ciclos anidados:";
-            a += valoresResultados[0] + "\n";
-            a += "Mayor Profundidad:";
-            a += valoresResultados[1] + "\n";
-            a += "Cantidad de instrucciones dentro de ciclos:";
-            a += valoresResultados[2] + "\n";
-            a += "Cantidad de funciones definidas: ";
-            a += valoresResultados[3] + "\n";
-            a += "Cantidad de funciones recursivas simples: ";
-            a += valoresResultados[4] + "\n";
-            a += "Cantidad de funciones recursivas compuestas:";
-            a += valoresResultados[5] + "\n";
-            a += "Cantidad de instrucciones dentro de funciones recursivas:";
-            a += valoresResultados[6] + "\n";
-            a += "Cantidad total de instrucciones:";
-            a += valoresResultados[7] + "\n";
-            a += "Cantidad de instrucciones fuera de funciones:";
-            a += valoresResultados[8] + "\n";
+            if (opcionesConfiguracion[0])
+            {
+                a += "Cantidad de ciclos anidados:";
+                a += valoresResultados[0] + "\n";
+            }
+            
+            if (opcionesConfiguracion[1])
+            {
+                a += "Mayor Profundidad:";
+                a += valoresResultados[1] + "\n";
+            }
+            if (opcionesConfiguracion[2])
+            {
+                a += "Cantidad de instrucciones dentro de ciclos:";
+                a += valoresResultados[2] + "\n";
+            }
+            if (opcionesConfiguracion[3])
+            {
+                a += "Cantidad de funciones definidas: ";
+                a += valoresResultados[3] + "\n";
+            }
+            if (opcionesConfiguracion[4])
+            {
+                a += "Cantidad de funciones recursivas simples: ";
+                a += valoresResultados[4] + "\n";
+            }
+            if (opcionesConfiguracion[5])
+            {
+                a += "Cantidad de funciones recursivas compuestas:";
+                a += valoresResultados[5] + "\n";
+            }
+            if (opcionesConfiguracion[6])
+            {
+                a += "\napartir de aqui faltan implementar\n";
+                a += "Cantidad de instrucciones dentro de funcoines recursivas:";
+                a += valoresResultados[6] + "\n";
+            }
 
+            if (opcionesConfiguracion[7])
+            {
+                a += "Cantidad de instrucciones totales del programa:";
+                a += valoresResultados[7] + "\n";
+            }
 
+            if (opcionesConfiguracion[8])
+            {
+                a += "Cantidad de instrucciones en comentario:";
+                a += valoresResultados[8] + "\n";
+            }
+
+            if (opcionesConfiguracion[9])
+            {
+                a += "Cantidad de instrucciones NO dentro de funciones:";
+                a += valoresResultados[9] + "\n";
+            }
             return a;
         }
 
