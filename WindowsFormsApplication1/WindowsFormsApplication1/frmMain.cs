@@ -255,19 +255,19 @@ namespace WindowsFormsApplication1
                         if (reader.GetAttribute("_name") == "For" || 
                             reader.GetAttribute("_name") == "While")
                         {
-                            //en caso de que si lo sea, busca en sus hijos por un ciclo anidado
-                            if (buscarAnidadosAux(reader.ReadSubtree()))
-                            {
-                                cant += 1;
-                            }
+                            //en caso de que si lo sea, busca en sus hijos por ciclos anidados
+
+                                cant += buscarAnidadosAux(reader.ReadSubtree());
                         }
                     }
                 }
             }
             return "Cantidad de ciclos anidados: " + cant + "\n";
         }
-        private bool buscarAnidadosAux(XmlReader subTree)
+
+        private int buscarAnidadosAux(XmlReader subTree)
         {
+            int cant = 0;
             subTree.Read(); //lee el siguiente nodo, esto para que no lea el mismo nodo 2 veces 
                             //(en el metodo anterior y este)
             while (subTree.Read())
@@ -281,11 +281,12 @@ namespace WindowsFormsApplication1
                     {
                         //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
                         //" " + subTree.GetAttribute("lineno") + "\n");
-                        return true;
+                        cant += 1;
+                        cant += buscarAnidadosAux(subTree);
                     }
                 }
             }
-            return false;
+            return cant;
         }
 
         /*
