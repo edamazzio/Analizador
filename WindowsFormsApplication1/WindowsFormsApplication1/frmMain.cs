@@ -225,7 +225,8 @@ namespace WindowsFormsApplication1
             respuesta += contarAnidados(result);
             respuesta += contarInsDentroCiclos(result);
             respuesta += cantidadDef(result);
-            respuesta += buscarFucnionesRecurs(result, 3);
+            respuesta += buscarFuncionesRecurs(result, 3);
+            respuesta += contarInstFucnionesRecurs(result);
 
             return respuesta + "\n\n" + result;
         }
@@ -400,9 +401,8 @@ namespace WindowsFormsApplication1
                             (subTree.Name == "_list_element" || subTree.Name == "value"))
                 {
 
-                    if (subTree.GetAttribute("_name") == "Assign" ||
-                        subTree.GetAttribute("_name") == "BinOp" ||
-                        subTree.GetAttribute("_name") == "If")
+                    if (subTree.GetAttribute("_name") == "Assign" || subTree.GetAttribute("_name") == "BinOp" ||
+                        subTree.GetAttribute("_name") == "If" || subTree.GetAttribute("_name") == "Return")
                     {
                         //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
                         //" " + subTree.GetAttribute("lineno") + "\n");
@@ -450,7 +450,7 @@ namespace WindowsFormsApplication1
         /// <param name="datos"> Archivo xml representado en string </param>
         /// <param name="seleccion"> Selecciona que tipo de funciones recursivas desea mostrar.\n1=Recursion Simple, 2=Recursion Multiple, otro=Ambas</param>
         /// <returns></returns>
-        String buscarFucnionesRecurs(String datos, int seleccion)
+        String buscarFuncionesRecurs(String datos, int seleccion)
         {
             int cantTemp = 0;
             int simples = 0;
@@ -470,7 +470,7 @@ namespace WindowsFormsApplication1
                         {
                             //en caso de que si lo sea, revisa dentro de la funcion si hay una llamada
                             //a ella misma.
-                            cantTemp = buscarFucnionesRecursAux(reader.ReadSubtree(), reader.GetAttribute("name"));
+                            cantTemp = buscarFuncionesRecursAux(reader.ReadSubtree(), reader.GetAttribute("name"));
                             if (cantTemp > 1)
                             {
                                 compuestas++;
@@ -496,7 +496,7 @@ namespace WindowsFormsApplication1
             }
         }
 
-        int buscarFucnionesRecursAux(XmlReader subTree, string nombre)
+        int buscarFuncionesRecursAux(XmlReader subTree, string nombre)
         {
             int cant = 0;
 
@@ -517,6 +517,69 @@ namespace WindowsFormsApplication1
             }
 
             return cant;
+        }
+
+        String contarInstFucnionesRecurs(String datos)
+        {
+            int cant = 0;
+
+            using (var reader = XmlReader.Create(new StringReader(datos)))
+            {
+                while (reader.Read()) //lee el siguiente elemento del xml
+                {
+                    /* si es elemento (ej. <_list_element>, <something>, etc)
+                     y si el tipo de ese elemento es "_list_element"
+                    */
+                    if (reader.NodeType == XmlNodeType.Element && reader.Name == "_list_element")
+                    {
+                        //verifica que el nombre asignado a ese elemento, sea un ciclo (for, while)
+                        if (reader.GetAttribute("_name") == "FunctionDef")
+                        {
+                            //en caso de que si lo sea, revisa dentro de la funcion si hay una llamada
+                            //a ella misma.
+                            cant += contarInstFuncionesRecursAux(reader.ReadSubtree(), reader.GetAttribute("name"));
+                        }
+                    }
+                }
+            }
+
+            return "Cantidad de instrucciones dentro de funciones recursivas: " + cant + "\n";
+        }
+
+        int contarInstFuncionesRecursAux(XmlReader subTree, string nombre)
+        {
+            bool recursivo = false;
+            int cant = 0;
+
+            while (subTree.Read())
+            {
+
+                if (subTree.NodeType == XmlNodeType.Element &&
+                            (subTree.Name == "_list_element" ||
+                            subTree.Name == "value" ||
+                            subTree.Name == "func"))
+                {
+
+                    if (subTree.GetAttribute("_name") == "Assign" || subTree.GetAttribute("_name") == "BinOp" ||
+                        subTree.GetAttribute("_name") == "If" || subTree.GetAttribute("_name") == "Return")
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        cant++;
+                    }
+                    if (subTree.GetAttribute("id") == nombre)
+                    {
+                        //System.Diagnostics.Debug.WriteLine(subTree.Name + " " + subTree.GetAttribute("_name") +
+                        //" " + subTree.GetAttribute("lineno") + "\n");
+                        recursivo = true;
+                    }
+                }
+            }
+            if (recursivo)
+            {
+                return cant;
+            }
+            return 0;
         }
 
         /// <summary>
