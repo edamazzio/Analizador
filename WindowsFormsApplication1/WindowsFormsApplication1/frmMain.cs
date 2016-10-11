@@ -335,7 +335,7 @@ namespace WindowsFormsApplication1
             valoresResultados[5] += buscarFuncionesRecurs(result, 2);
             valoresResultados[6] += contarInstFuncionesRecurs(result);
             valoresResultados[7] += cantidadInstrucciones(result);
-            valoresResultados[8] += cantidadNOdentroFunciones(result);
+            valoresResultados[9] += cantidadNOdentroFunciones(result);
 
 
             return;
