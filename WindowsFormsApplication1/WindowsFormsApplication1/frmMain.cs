@@ -17,7 +17,29 @@ namespace WindowsFormsApplication1
     public partial class frmMain : Form
     {
         List<string> filesToAnalize = new List<string>();
-        List<string> fileResults = new List<string>();
+        List<int> valoresResultados = new List<int>() 
+        {
+            {0},
+            {0},
+            {0},
+            {0},
+            {0},
+            {0},
+            {0},
+            {0},
+            {0}
+        };
+        //los resultados, van a ir en el siguiente orden:
+        // 0: cantidad de ciclos anidados
+        // 1: mayor profundidad
+        // 2: cantidad de instrucciones dentro de ciclos
+        // 3: cantidad de funcoines definidas
+        // 4: Cantidad de funciones recursivas simples: 
+        // 5: Cantidad de funciones recursivas compuestas: 
+        // 6: cantidad de instrucciones dentro de funcoines recursivas
+        // 7: cantidad de instrucciones totales del programa
+        // 8: cantidad de instrucciones en comentario
+        // 9: cantidad de instrucciones NO dentro de funciones
 
         public frmMain()
         {
@@ -185,11 +207,53 @@ namespace WindowsFormsApplication1
                 findAstToXML();
             }
             filesToAnalize.Clear();
-            fileResults.Clear();
+            clearValoresResultados();
+
             GetCheckedNodes(tvMain.Nodes);
-            foreach (string file in filesToAnalize) fileResults.Add(run_cmd(@Properties.Settings.Default.astToXML, file)); //agrega cada xml a la lista fileResults
+            foreach (string file in filesToAnalize)
+            {
+                run_cmd(@Properties.Settings.Default.astToXML, file); //agrega cada xml a la lista fileResults
+            }
+
             richTextBox1.Text = "Archivos py analizados: " + filesToAnalize.Count()+ "\n";
-            foreach (string item in fileResults) richTextBox1.AppendText(item); //Solo para debug imprime toda la lista de resultados en el richTextBox1
+            richTextBox1.AppendText(generateResultString()); //Solo para debug imprime toda la lista de resultados en el richTextBox1
+        }
+
+        /// <summary>
+        /// pone todos los valores en valoresResultados en 0 (les hace clear)
+        /// </summary>
+        private void clearValoresResultados()
+        {
+            for (int i = 0; i < valoresResultados.Count; i++)
+            {
+                valoresResultados[i] = 0;
+            }
+
+        }
+
+        /// <summary>
+        /// genera el string que se va a presentar en la pantalla como resultado del analisis,
+        /// utiliza los valores en el atributo de la clase VarloesResultados para generar el string
+        /// </summary>
+        /// <returns></returns>
+        private string generateResultString()
+        {
+            string a = "";
+            a += "Cantidad de ciclos anidados:";
+            a += valoresResultados[0] + "\n";
+            a += "Mayor Profundidad:";
+            a += valoresResultados[1] + "\n";
+            a += "Cantidad de instrucciones dentro de ciclos:";
+            a += valoresResultados[2] + "\n";
+            a += "Cantidad de funciones definidas: ";
+            a += valoresResultados[3] + "\n";
+            a += "Cantidad de funciones recursivas simples: ";
+            a += valoresResultados[4] + "\n";
+            a += "Cantidad de funciones recursivas compuestas:";
+            a += valoresResultados[5] + "\n";
+
+
+            return a;
         }
 
         /// <summary>
@@ -198,7 +262,7 @@ namespace WindowsFormsApplication1
         /// <param name="pyFile">El script de python a correr</param>
         /// <param name="args">Argumentos del script a correr</param>
         /// <returns>String</returns>
-        private string run_cmd(string pyFile, string args)
+        private void run_cmd(string pyFile, string args)
         {
             ProcessStartInfo start = new ProcessStartInfo();
             while (!File.Exists(Properties.Settings.Default.python))
@@ -220,16 +284,15 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            string respuesta = "";
-            respuesta += buscarAnidados(result);
-            respuesta += contarAnidados(result);
-            respuesta += contarInsDentroCiclos(result);
-            respuesta += cantidadDef(result);
-            respuesta += buscarFuncionesRecurs(result, 3);
-            respuesta += contarInstFucnionesRecurs(result);
-            respuesta += cantidadInstrucciones(result);
+            valoresResultados[0] += buscarAnidados(result);
+            valoresResultados[1] += contarAnidados(result);
+            valoresResultados[2] += contarInsDentroCiclos(result);
+            valoresResultados[3] += cantidadDef(result);
+            valoresResultados[4] += buscarFucnionesRecurs(result, 1);
+            valoresResultados[4] += buscarFucnionesRecurs(result, 2);
 
-            return respuesta + "\n\n" + result;
+
+            return;
         }
 
         /*
@@ -239,7 +302,7 @@ namespace WindowsFormsApplication1
          * return:
                 * string
         */
-        private String buscarAnidados(String datos)
+        private int buscarAnidados(String datos)
         {
             int cant = 0;
             using (var reader = XmlReader.Create(new StringReader(datos))) 
@@ -263,9 +326,14 @@ namespace WindowsFormsApplication1
                     }
                 }
             }
-            return "Cantidad de ciclos anidados: " + cant + "\n";
+            return cant;
         }
 
+        /// <summary>
+        /// busca ciclos anidados y los ciclos anidados dentro de ellos
+        /// </summary>
+        /// <param name="subTree"></param>
+        /// <returns></returns>
         private int buscarAnidadosAux(XmlReader subTree)
         {
             int cant = 0;
@@ -297,7 +365,7 @@ namespace WindowsFormsApplication1
          * return:
                 * string
         */
-        private String contarAnidados(String datos)
+        private int contarAnidados(String datos)
         {
             int mayor = 0;
             int temp = 0;
@@ -325,7 +393,7 @@ namespace WindowsFormsApplication1
                     }
                 }
             }
-            return "Mayor Profundidad: " + mayor + "\n";
+            return mayor;
         }
         private int contarAnidadosAux(XmlReader subTree)
         {
@@ -363,7 +431,7 @@ namespace WindowsFormsApplication1
          * return:
                 * string
         */
-        private String contarInsDentroCiclos(String datos)
+        private int contarInsDentroCiclos(String datos)
         {
             int cant = 0;
             using (var reader = XmlReader.Create(new StringReader(datos)))
@@ -389,7 +457,7 @@ namespace WindowsFormsApplication1
                     }
                 }
             }
-            return "Cantidad de instrucciones dentro de ciclos: " + cant + "\n";
+            return cant;
         }
         private int contarInsDentroCiclosAux(XmlReader subTree)
         {
@@ -441,7 +509,7 @@ namespace WindowsFormsApplication1
                     }
                 }
             }
-            return "Cantidad de funciones definidas: " + cant + "\n";
+            return cant;
         }
 
         /// <summary>
@@ -450,7 +518,7 @@ namespace WindowsFormsApplication1
         /// <param name="datos"> Archivo xml representado en string </param>
         /// <param name="seleccion"> Selecciona que tipo de funciones recursivas desea mostrar.\n1=Recursion Simple, 2=Recursion Multiple, otro=Ambas</param>
         /// <returns></returns>
-        String buscarFuncionesRecurs(String datos, int seleccion)
+        int buscarFucnionesRecurs(String datos, int seleccion)
         {
             int cantTemp = 0;
             int simples = 0;
@@ -487,12 +555,11 @@ namespace WindowsFormsApplication1
             switch (seleccion)
             {
                 case 1:
-                    return "Cantidad de funciones recursivas simples: " + simples + "\n";
+                    return simples;
                 case 2:
-                    return "Cantidad de funciones recursivas compuestas: " + compuestas + "\n";
+                    return compuestas;
                default:
-                    return "Cantidad de funciones recursivas simples: " + simples + 
-                        "\nCantidad de funciones recursivas compuestas: " + compuestas + "\n";
+                    return simples + compuestas;
             }
         }
 
