@@ -488,7 +488,7 @@ namespace WindowsFormsApplication1
         /// </summary>
         /// <param name="datos">Cadena con los datos del xml</param>
         /// <returns></returns>
-        private string cantidadDef(String datos)
+        private int cantidadDef(String datos)
         {
             int cant = 0;
             using (var reader = XmlReader.Create(new StringReader(datos)))
