@@ -256,18 +256,18 @@ namespace WindowsFormsApplication1
             string a = "";
             if (opcionesConfiguracion[0])
             {
-                a += "Cantidad de ciclos anidados:";
+                a += "Cantidad de ciclos anidados: ";
                 a += valoresResultados[0] + "\n";
             }
             
             if (opcionesConfiguracion[1])
             {
-                a += "Mayor Profundidad:";
+                a += "Mayor Profundidad: ";
                 a += valoresResultados[1] + "\n";
             }
             if (opcionesConfiguracion[2])
             {
-                a += "Cantidad de instrucciones dentro de ciclos:";
+                a += "Cantidad de instrucciones dentro de ciclos: ";
                 a += valoresResultados[2] + "\n";
             }
             if (opcionesConfiguracion[3])
@@ -282,30 +282,30 @@ namespace WindowsFormsApplication1
             }
             if (opcionesConfiguracion[5])
             {
-                a += "Cantidad de funciones recursivas compuestas:";
+                a += "Cantidad de funciones recursivas compuestas: ";
                 a += valoresResultados[5] + "\n";
             }
             if (opcionesConfiguracion[6])
             {
-                a += "Cantidad de instrucciones dentro de funcoines recursivas:";
+                a += "Cantidad de instrucciones dentro de funcoines recursivas: ";
                 a += valoresResultados[6] + "\n";
             }
 
             if (opcionesConfiguracion[7])
             {
-                a += "Cantidad de instrucciones totales del programa:";
+                a += "Cantidad de instrucciones totales del programa: ";
                 a += valoresResultados[7] + "\n";
             }
 
             if (opcionesConfiguracion[8])
             {
-                a += "Cantidad de instrucciones en comentario:";
+                a += "Cantidad de instrucciones en comentario: ";
                 a += valoresResultados[8] + "\n";
             }
 
             if (opcionesConfiguracion[9])
             {
-                a += "Cantidad de instrucciones NO dentro de funciones:";
+                a += "Cantidad de instrucciones NO dentro de funciones: ";
                 a += valoresResultados[9] + "\n";
             }
             return a;
